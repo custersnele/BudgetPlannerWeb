@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Overview payments</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Date-Picker Plugin -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+    <link href="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a class="nav-item nav-link" href="add_payment.html">Add payment</a>
+            <a class="nav-item nav-link" href="overview_payments.html">Payments</a>
+            <a class="nav-item nav-link" href="manage_accounts.html">Manage accounts</a>
+            <a class="nav-item nav-link active" href="manage_labels.html">Manage labels<span class="sr-only">(current)</span></a>
+        </div>
+    </div>
+</nav>
+<div class="container" id="search-form">
+    <div class="row">
+        <div class="col-md-2">
+            <label for="name">Name*:</label>
+        </div>
+        <div class='col-sm-6'>
+            <div class="form-group">
+                <div>
+                    <input type='text' class="form-control" id="name"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <label for="from-date">From:</label>
+        </div>
+        <div class='col-sm-6'>
+            <div class="form-group">
+                <div class='input-group date'>
+                    <input type='text' class="form-control" id='from-date'/>
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <label for="to-date">To:</label>
+        </div>
+        <div class='col-sm-6'>
+            <div class="form-group">
+                <div class='input-group date'>
+                    <input type='text' class="form-control" id='to-date'/>
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <label for="search-label">Label:</label>
+        </div>
+        <div class='col-sm-6'>
+            <div class="form-group">
+                <div class='input-group'>
+                    <select class="form-control" id='search-label'>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <button type="button" class="btn btn-primary" id="search-button">Search</button>
+    </div>
+</div>
+<div id="message"></div>
+<div class="container" id="payments">
+    <table class="table table-striped" id="payments-table">
+        <thead>
+        <tr>
+            <th data-field="id" scope="col">Date</th>
+            <th data-field="counterAccount" scope="col">Counter account</th>
+            <th data-field="amount" scope="col">Amount</th>
+            <th data-field="detail" scope="col">Detail</th>
+            <th data-field="label" data-formatter="linkFormatter" data-events="linkEvent">Label</th>
+            <th data-field="delete" data-formatter="deleteFormatter" data-events="deleteEvent">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+<div class="container" id="add-payment-form">
+    <div class="row">
+        <div class="col-md-2">
+            <label for="amount">Amount:</label>
+        </div>
+        <div class='col-sm-6'>
+            <div class="form-group">
+                <div>
+                    <input type='text' class="form-control" id="amount"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <label for="date">Date:</label>
+        </div>
+        <div class='col-sm-6'>
+            <div class="form-group">
+                <div class='input-group date'>
+                    <input type='text' class="form-control" id='date'/>
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <label for="date">Detail:</label>
+        </div>
+        <div class='col-sm-6'>
+            <div class="form-group">
+                <div class='input-group date'>
+                    <input type='text' class="form-control" id='detail'/>
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <button type="button" class="btn btn-primary" id="add-button">Add</button>
+    </div>
+</div>
+
+<script
+        src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous"></script>
+<script src="js/bootstrap.bundle.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.16.0/dist/extensions/editable/bootstrap-table-editable.min.js"></script>
+<script src="js/labels.js"></script>
+<script>
+
+    var label_options;
+
+    function init() {
+        var options = {
+            format: 'dd/mm/yyyy',
+            todayHighlight: true,
+            autoclose: true,
+        };
+        $('#from-date').datepicker(options);
+        $('#to-date').datepicker(options);
+        $('#search-button').click(doSearch);
+        findLabels().then((response) => {
+            let search_label = $('#search-label');
+            search_label.append("<option value=''>-- all labels --</option>");
+            for (var it in response) {
+                search_label.append("<option>" + response[it].name + "</option>");
+            }
+            label_options = response;
+        })
+    }
+
+    function createLabelDropdown(selectedLabel) {
+        result = "<select class='label-select'>";
+        for (var it in label_options) {
+            var selected = '';
+            if (label_options[it].id === selectedLabel.id) {
+                selected = 'selected="selected"';
+            }
+            result += "<option value='" + label_options[it].id + "'" + selected + ">" + label_options[it].name + "</option>";
+        }
+        result += "</select>";
+        return result;
+    }
+
+    function deleteFormatter(value, row, index) {
+        return [
+            '<a class="remove" href="javascript:void(0)" title="Remove">',
+            '<i class="fa fa-trash"></i>',
+            '</a>'
+        ].join('')
+    }
+
+    window.deleteEvent = {
+        'click .remove': function (e, value, row, index) {
+            removePayment(row.id);
+        }
+    };
+
+    function linkFormatter(value, row, index) {
+        return createLabelDropdown(value);
+    }
+
+    window.linkEvent = {
+        'change .label-select': function (e, value, row, index) {
+            alert(row.id + " linked to " + e.target.value);
+            linkPayment(row.id, e.target.value);
+        }
+    };
+
+    function doSearch() {
+        let url = 'http://localhost:8085/BudgetPlanner/api/accounts/' + $('#name').val();
+        let from = $('#from-date').val();
+        let to = $('#to-date').val();
+        let label = $('#search-label').val();
+        let message = document.getElementById("message");
+
+        let params = {
+            "fromDate": from,
+            "toDate": to,
+            "label": label
+        };
+        let query = Object.keys(params)
+            .map(k => params[k] === ''? '' : encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
+            .join('&');
+        url = url + '?' + query;
+
+        fetch(url,
+            {
+                method: "GET",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then((response) => {
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    throw response.status;
+                }
+            })
+            .then((response) => {
+                $("#payments-table").bootstrapTable('destroy');
+                $("#payments-table").bootstrapTable({
+                    data: response
+                });
+            })
+            .catch((exception) => {
+                    switch (exception) {
+                        case 400:
+                            message.innerHTML = "Error 400: Bad request.";
+                            break;
+                        default:
+                            message.innerHTML = "Error with status" + status;
+                    }
+                    message.style.visibility = "visible";
+                }
+            );
+    }
+
+
+    init();
+</script>
+</body>
+</html>
