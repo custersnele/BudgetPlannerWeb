@@ -3,9 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Manage labels</title>
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Bootstrap Date-Picker Plugin -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+    <!-- Bootstrap table plugin -->
     <link href="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.css" rel="stylesheet">
 </head>
 <body>
@@ -24,7 +30,7 @@
     </div>
 </nav>
 <div id="message"></div>
-<div class="container" id="labels-overview">
+<div class="container p-3" id="labels-overview">
     <table class="table table-striped" id="labels-table">
         <thead>
         <tr>
@@ -37,7 +43,7 @@
         </tbody>
     </table>
 </div>
-<div class="container" id="add-label-form">
+<div class="container p-3 border" id="add-label-form">
     <form>
         <div class="row">
             <div class="col-md-2">
@@ -54,17 +60,16 @@
         </div>
     </form>
 </div>
-
-
-</div>
-
-<script
-        src="https://code.jquery.com/jquery-3.4.1.min.js"
-        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
-<script src="js/bootstrap.bundle.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
 <script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.16.0/dist/extensions/editable/bootstrap-table-editable.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/labels.js"></script>
 <script>
 
     function operateFormatter(value, row, index) {
@@ -87,7 +92,7 @@
     }
 
     function removeLabel(id) {
-        let url = 'http://localhost:8085/BudgetPlanner/api/labels/' + id;
+        let url = BACKEND_URL + '/BudgetPlanner/api/labels/' + id;
 
         fetch(url,
             {
@@ -100,12 +105,21 @@
             .then((response) => {
                 if (response.status === 202) {
                     return findLabels();
+                } else {
+                    throw response;
                 }
             })
+            .catch((exception) => {
+                exception.json().then((error) => {
+                        message.innerHTML = "An error occurred. " + error.message;
+                        message.style.visibility = "visible";
+                    }
+                );
+            });
     }
 
     function addLabel() {
-        let url = 'http://localhost:8085/BudgetPlanner/api/labels/';
+        let url = BACKEND_URL + '/BudgetPlanner/api/labels/';
         let name = $('#name').val();
         let message = document.getElementById("message");
 

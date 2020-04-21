@@ -9,22 +9,26 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <!-- Bootstrap Date-Picker Plugin -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
     <!-- Bootstrap table plugin -->
     <link href="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.css" rel="stylesheet">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Navbar</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <a class="navbar-brand" href="#">Budget Planner</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
             <a class="nav-item nav-link" href="add_payment.html">Add payment</a>
-            <a class="nav-item nav-link active" href="overview_payments.html">Payments<span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link active" href="overview_payments.html">Payments<span
+                    class="sr-only">(current)</span></a>
             <a class="nav-item nav-link" href="manage_accounts.html">Manage accounts</a>
             <a class="nav-item nav-link" href="manage_labels.html">Manage labels</a>
         </div>
@@ -39,20 +43,6 @@
             <div class="form-group">
                 <div>
                     <input type='text' class="form-control" id="name"/>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2">
-            <label>Date range:</label>
-        </div>
-        <div class='col-sm-6'>
-            <div class="form-group">
-                <div class="input-daterange input-group" id="datepicker">
-                    <input type="text" class="input-sm form-control" name="start" id="dateFrom" />
-                    <span class="input-group-addon">to</span>
-                    <input type="text" class="input-sm form-control" name="end" id="dateTo" />
                 </div>
             </div>
         </div>
@@ -92,8 +82,11 @@
     </table>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
 <script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
 <script src="https://unpkg.com/bootstrap-table@1.16.0/dist/extensions/editable/bootstrap-table-editable.min.js"></script>
@@ -120,7 +113,7 @@
             label_options = response;
         });
         let account = sessionStorage.getItem("account");
-        if (account !== '') {
+        if (account != null && account !== '') {
             $('#name').val(account);
             doSearch();
         }
@@ -150,6 +143,7 @@
     window.deleteEvent = {
         'click .remove': function (e, value, row, index) {
             removePayment(row.id);
+            doSearch();
         }
     };
 
@@ -164,22 +158,34 @@
         }
     };
 
+    function removePayment(id) {
+        let url = BACKEND_URL + '/BudgetPlanner/api/payments/' + id;
+
+        fetch(url,
+            {
+                method: "DELETE",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then((response) => {
+                if (response.status === 202) {
+                    return response;
+                }
+            })
+    }
+
+
     function doSearch() {
-        let url = 'http://localhost:8085/BudgetPlanner/api/accounts/' + $('#name').val();
-        let from = $('#from-date').val();
-        let to = $('#to-date').val();
+        let url = BACKEND_URL + '/BudgetPlanner/api/accounts/' + $('#name').val();
         let label = $('#search-label').val();
         let message = document.getElementById("message");
 
-        let params = {
-            "fromDate": from,
-            "toDate": to,
-            "label": label
-        };
-        let query = Object.keys(params)
-            .map(k => params[k] === ''? '' : encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
-            .join('&');
-        url = url + '?' + query;
+        if (label != null && label !== '') {
+            let query = encodeURIComponent('label') + '=' + encodeURIComponent(label);
+            url = url + '?' + query;
+        }
 
         fetch(url,
             {
