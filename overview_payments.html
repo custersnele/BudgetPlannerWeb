@@ -5,14 +5,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Overview payments</title>
+    <title>Budget Planner</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <!-- Bootstrap Date-Picker Plugin -->
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+    <!-- Bootstrap table plugin -->
     <link href="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.css" rel="stylesheet">
 </head>
 <body>
@@ -24,13 +24,13 @@
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
             <a class="nav-item nav-link" href="add_payment.html">Add payment</a>
-            <a class="nav-item nav-link" href="overview_payments.html">Payments</a>
+            <a class="nav-item nav-link active" href="overview_payments.html">Payments<span class="sr-only">(current)</span></a>
             <a class="nav-item nav-link" href="manage_accounts.html">Manage accounts</a>
-            <a class="nav-item nav-link active" href="manage_labels.html">Manage labels<span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link" href="manage_labels.html">Manage labels</a>
         </div>
     </div>
 </nav>
-<div class="container" id="search-form">
+<div class="container border border-primary p-3 mb-3 mt-3" id="search-form">
     <div class="row">
         <div class="col-md-2">
             <label for="name">Name*:</label>
@@ -45,30 +45,14 @@
     </div>
     <div class="row">
         <div class="col-md-2">
-            <label for="from-date">From:</label>
+            <label>Date range:</label>
         </div>
         <div class='col-sm-6'>
             <div class="form-group">
-                <div class='input-group date'>
-                    <input type='text' class="form-control" id='from-date'/>
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2">
-            <label for="to-date">To:</label>
-        </div>
-        <div class='col-sm-6'>
-            <div class="form-group">
-                <div class='input-group date'>
-                    <input type='text' class="form-control" id='to-date'/>
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </span>
+                <div class="input-daterange input-group" id="datepicker">
+                    <input type="text" class="input-sm form-control" name="start" id="dateFrom" />
+                    <span class="input-group-addon">to</span>
+                    <input type="text" class="input-sm form-control" name="end" id="dateTo" />
                 </div>
             </div>
         </div>
@@ -108,21 +92,12 @@
     </table>
 </div>
 
-    <div>
-        <button type="button" class="btn btn-primary" id="add-button" >Add</button>
-    </div>
-</div>
-
-<script
-        src="https://code.jquery.com/jquery-3.4.1.min.js"
-        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-        crossorigin="anonymous"></script>
-<script src="js/bootstrap.bundle.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
 <script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
 <script src="https://unpkg.com/bootstrap-table@1.16.0/dist/extensions/editable/bootstrap-table-editable.min.js"></script>
+<script src="js/config.js"></script>
 <script src="js/labels.js"></script>
 <script>
 
@@ -134,8 +109,7 @@
             todayHighlight: true,
             autoclose: true,
         };
-        $('#from-date').datepicker(options);
-        $('#to-date').datepicker(options);
+        $('.input-daterange').datepicker(options);
         $('#search-button').click(doSearch);
         findLabels().then((response) => {
             let search_label = $('#search-label');
@@ -144,14 +118,19 @@
                 search_label.append("<option>" + response[it].name + "</option>");
             }
             label_options = response;
-        })
+        });
+        let account = sessionStorage.getItem("account");
+        if (account !== '') {
+            $('#name').val(account);
+            doSearch();
+        }
     }
 
     function createLabelDropdown(selectedLabel) {
         result = "<select class='label-select'>";
         for (var it in label_options) {
             var selected = '';
-            if (label_options[it].id === selectedLabel.id) {
+            if (selectedLabel !== undefined && label_options[it].id === selectedLabel.id) {
                 selected = 'selected="selected"';
             }
             result += "<option value='" + label_options[it].id + "'" + selected + ">" + label_options[it].name + "</option>";

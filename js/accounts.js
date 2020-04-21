@@ -1,5 +1,5 @@
 function findAccounts() {
-    let url = 'http://localhost:8085/BudgetPlanner/api/accounts';
+    let url = BACKEND_URL + '/BudgetPlanner/api/accounts';
 
     return fetch(url,
         {
@@ -18,7 +18,7 @@ function findAccounts() {
 
 
 function addAccount(iban, name) {
-    let url = 'http://localhost:8085/BudgetPlanner/api/accounts';
+    let url = BACKEND_URL + '/BudgetPlanner/api/accounts';
     let data = {'iban': iban, 'name': name};
 
     return fetch(url,
@@ -39,7 +39,7 @@ function addAccount(iban, name) {
 
 
 function removeAccount(id) {
-    let url = 'http://localhost:8085/BudgetPlanner/api/accounts/' + id;
+    let url = BACKEND_URL + '/BudgetPlanner/api/accounts/' + id;
 
     fetch(url,
         {

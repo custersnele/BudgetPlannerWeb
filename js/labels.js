@@ -1,5 +1,5 @@
 function findLabels() {
-    let url = 'http://localhost:8085/BudgetPlanner/api/labels';
+    let url = BACKEND_URL + '/BudgetPlanner/api/labels';
 
     return fetch(url,
         {
@@ -18,7 +18,7 @@ function findLabels() {
 
 
 function linkPayment(paymentId, labelId) {
-    let url = 'http://localhost:8085/BudgetPlanner/api/payments/' + paymentId + "/link/" + labelId;
+    let url = BACKEND_URL + '/BudgetPlanner/api/payments/' + paymentId + "/link/" + labelId;
 
     return fetch(url,
         {
