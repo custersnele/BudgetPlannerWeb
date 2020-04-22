@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage accounts</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Budget Planner</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+            <a class="nav-item nav-link" href="overview_payments.html">Payments</a>
+            <a class="nav-item nav-link" href="add_payment.html">Add payment</a>
+            <a class="nav-item nav-link active" href="add_account.html">Add account<span
+                    class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link" href="manage_labels.html">Manage labels</a>
+        </div>
+    </div>
+</nav>
+<div class="container border border-primary p-3 mb-3 mt-3" id="add-account-form">
+    <form>
+        <div class="row p-3">
+            <div class="col-md-2">
+                <label for="name">Name:</label>
+            </div>
+            <div class='col-md-6'>
+                <div>
+                    <input type='text' class="form-control" id="name"/>
+                </div>
+            </div>
+        </div>
+        <div class="row p-3">
+            <div class="col-md-2">
+                <label for="iban">IBAN:</label>
+            </div>
+            <div class='col-md-6'>
+                <div>
+                    <input type='text' class="form-control" id="iban"/>
+                </div>
+            </div>
+        </div>
+        <div class="row p-3">
+            <div class="col-md-2">
+                <button type="button" class="btn btn-primary" id="add-button">Add</button>
+            </div>
+        </div>
+    </form>
+    <div class="alert alert-primary" role="alert" id="message">
+    </div>
+    <div class="alert alert-danger" role="alert" id="error">
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.16.0/dist/extensions/editable/bootstrap-table-editable.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/labels.js"></script>
+<script src="js/accounts.js"></script>
+<script>
+
+    function init() {
+        $('#message').hide();
+        $('#error').hide();
+        $('#add-button').click(addAccount);
+    }
+
+    function addAccount() {
+        let name = $('#name').val();
+        let iban = $('#iban').val();
+        var $errorMessage = $('#error');
+        var $message = $('#message');
+        createNewAccount(iban, name).then((response) => {
+            $message.text("Account successfully created!");
+            $errorMessage.hide();
+            $message.show();
+        }).catch((exception) => {
+                exception.json().then((error) => {
+                    $errorMessage.text(error.message);
+                    $errorMessage.show();
+                    $message.hide();
+                });
+            }
+        );
+    }
+
+    init()
+</script>
+</body>
+</html>

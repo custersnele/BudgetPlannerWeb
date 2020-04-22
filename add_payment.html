@@ -23,7 +23,7 @@
         <div class="navbar-nav">
             <a class="nav-item nav-link active" href="add_payment.html">Add payment<span class="sr-only">(current)</span></a>
             <a class="nav-item nav-link" href="overview_payments.html">Payments</a>
-            <a class="nav-item nav-link" href="manage_accounts.html">Manage accounts</a>
+            <a class="nav-item nav-link" href="add_account.html">Manage accounts</a>
             <a class="nav-item nav-link" href="manage_labels.html">Manage labels<span class="sr-only">(current)</span></a>
         </div>
     </div>
@@ -148,7 +148,6 @@
             })
             .then((response) => {
                 if (response.status === 201) {
-                    sessionStorage.setItem("account", account);
                     window.location = "overview_payments.html";
                 } else {
                     throw response.status;

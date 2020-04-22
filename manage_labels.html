@@ -17,15 +17,17 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="#">Budget Planner</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
             <a class="nav-item nav-link" href="add_payment.html">Add payment</a>
             <a class="nav-item nav-link" href="overview_payments.html">Payments</a>
-            <a class="nav-item nav-link" href="manage_accounts.html">Manage accounts</a>
-            <a class="nav-item nav-link active" href="manage_labels.html">Manage labels<span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link" href="add_account.html">Manage accounts</a>
+            <a class="nav-item nav-link active" href="manage_labels.html">Manage labels<span
+                    class="sr-only">(current)</span></a>
         </div>
     </div>
 </nav>
@@ -93,6 +95,7 @@
 
     function removeLabel(id) {
         let url = BACKEND_URL + '/BudgetPlanner/api/labels/' + id;
+        let $message = $("#message");
 
         fetch(url,
             {
@@ -111,8 +114,8 @@
             })
             .catch((exception) => {
                 exception.json().then((error) => {
-                        message.innerHTML = "An error occurred. " + error.message;
-                        message.style.visibility = "visible";
+                        $message.text("An error occurred. " + error.message);
+                        $message.show();
                     }
                 );
             });
@@ -121,7 +124,7 @@
     function addLabel() {
         let url = BACKEND_URL + '/BudgetPlanner/api/labels/';
         let name = $('#name').val();
-        let message = document.getElementById("message");
+        let $message = $("#message");
 
         fetch(url,
             {
@@ -140,16 +143,12 @@
                 }
             })
             .catch((exception) => {
-                    switch (exception) {
-                        case 400:
-                            message.innerHTML = "Error 400: Bad request. " + exception.message;
-                            break;
-                        default:
-                            message.innerHTML = "Error with status" + exception.status;
+                exception.json().then((error) => {
+                        $message.text("An error occurred. " + error.message);
+                        $message.show();
                     }
-                    message.style.visibility = "visible";
-                }
-            );
+                );
+            });
     }
 
     function findLabels() {

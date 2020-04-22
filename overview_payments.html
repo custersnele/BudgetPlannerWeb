@@ -29,7 +29,7 @@
             <a class="nav-item nav-link" href="add_payment.html">Add payment</a>
             <a class="nav-item nav-link active" href="overview_payments.html">Payments<span
                     class="sr-only">(current)</span></a>
-            <a class="nav-item nav-link" href="manage_accounts.html">Manage accounts</a>
+            <a class="nav-item nav-link" href="add_account.html">Manage accounts</a>
             <a class="nav-item nav-link" href="manage_labels.html">Manage labels</a>
         </div>
     </div>
@@ -65,13 +65,18 @@
     </div>
 </div>
 <div id="message"></div>
+<div class="container border border-primary p-3 mb-3 mt-3" id="result-form">
+    <h2>Receiving: <span class="badge badge-secondary" id="receiving">€0</span></h2>
+    <h2>Spending: <span class="badge badge-secondary" id="spending">€0</span></h2>
+    <h2>Result: <span class="badge badge-secondary" id="result">€0</span></h2>
+</div>
 <div class="container" id="payments">
     <table class="table table-striped" id="payments-table">
         <thead>
         <tr>
-            <th data-field="id" scope="col">Date</th>
+            <th data-field="date" scope="col">Date</th>
             <th data-field="counterAccount" scope="col">Counter account</th>
-            <th data-field="amount" scope="col">Amount</th>
+            <th data-field="amount" data-formatter="amountFormatter" scope="col">Amount</th>
             <th data-field="detail" scope="col">Detail</th>
             <th data-field="label" data-formatter="linkFormatter" data-events="linkEvent">Label</th>
             <th data-field="delete" data-formatter="deleteFormatter" data-events="deleteEvent">Actions</th>
@@ -112,21 +117,21 @@
             }
             label_options = response;
         });
-        let account = sessionStorage.getItem("account");
-        if (account != null && account !== '') {
-            $('#name').val(account);
-            doSearch();
-        }
     }
 
     function createLabelDropdown(selectedLabel) {
         result = "<select class='label-select'>";
+        let labelSelected = false;
         for (var it in label_options) {
             var selected = '';
             if (selectedLabel !== undefined && label_options[it].id === selectedLabel.id) {
                 selected = 'selected="selected"';
+                labelSelected = true;
             }
             result += "<option value='" + label_options[it].id + "'" + selected + ">" + label_options[it].name + "</option>";
+        }
+        if (!labelSelected) {
+            result += "<option selected='selected' value=''>-- choose a label --</option>";
         }
         result += "</select>";
         return result;
@@ -137,7 +142,7 @@
             '<a class="remove" href="javascript:void(0)" title="Remove">',
             '<i class="fa fa-trash"></i>',
             '</a>'
-        ].join('')
+        ].join('');
     }
 
     window.deleteEvent = {
@@ -151,9 +156,12 @@
         return createLabelDropdown(value);
     }
 
+    function amountFormatter(value, row, index) {
+        return '€' + parseFloat(value).toFixed(2);
+    }
+
     window.linkEvent = {
         'change .label-select': function (e, value, row, index) {
-            alert(row.id + " linked to " + e.target.value);
             linkPayment(row.id, e.target.value);
         }
     };
@@ -203,9 +211,12 @@
                 }
             })
             .then((response) => {
+                $("#spending").text('€' + parseFloat(response.spendingAmount).toFixed(2));
+                $("#receiving").text('€' + parseFloat(response.receivingAmount).toFixed(2));
+                $("#result").text('€' + parseFloat(response.resultAmount).toFixed(2));
                 $("#payments-table").bootstrapTable('destroy');
                 $("#payments-table").bootstrapTable({
-                    data: response
+                    data: response.payments
                 });
             })
             .catch((exception) => {

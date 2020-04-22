@@ -1,23 +1,4 @@
-function findAccounts() {
-    let url = BACKEND_URL + '/BudgetPlanner/api/accounts';
-
-    return fetch(url,
-        {
-            method: "GET",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        .then((response) => {
-            if (response.status === 200) {
-                return response.json();
-            }
-        });
-}
-
-
-function addAccount(iban, name) {
+function createNewAccount(iban, name) {
     let url = BACKEND_URL + '/BudgetPlanner/api/accounts';
     let data = {'iban': iban, 'name': name};
 
@@ -31,8 +12,10 @@ function addAccount(iban, name) {
             }
         })
         .then((response) => {
-            if (response.status === 200) {
+            if (response.status === 201) {
                 return response;
+            } else {
+                throw response;
             }
         });
 }
