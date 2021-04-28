@@ -23,6 +23,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
+            <a class="nav-item nav-link" href="upload_payments.html">Upload</a>
             <a class="nav-item nav-link" href="add_payment.html">Add payment</a>
             <a class="nav-item nav-link" href="overview_payments.html">Payments</a>
             <a class="nav-item nav-link" href="add_account.html">Manage accounts</a>
@@ -94,7 +95,7 @@
     }
 
     function removeLabel(id) {
-        let url = BACKEND_URL + '/BudgetPlanner/api/labels/' + id;
+        let url = BACKEND_URL + '/categories/' + id;
         let $message = $("#message");
 
         fetch(url,
@@ -122,7 +123,7 @@
     }
 
     function addLabel() {
-        let url = BACKEND_URL + '/BudgetPlanner/api/labels/';
+        let url = BACKEND_URL + '/categories/';
         let name = $('#name').val();
         let $message = $("#message");
 
@@ -152,7 +153,7 @@
     }
 
     function findLabels() {
-        let url = BACKEND_URL + '/BudgetPlanner/api/labels';
+        let url = BACKEND_URL + '/categories';
 
         fetch(url,
             {

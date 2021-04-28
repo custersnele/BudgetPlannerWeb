@@ -26,6 +26,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
+            <a class="nav-item nav-link" href="upload_payments.html">Upload</a>
             <a class="nav-item nav-link" href="add_payment.html">Add payment</a>
             <a class="nav-item nav-link active" href="overview_payments.html">Payments<span
                     class="sr-only">(current)</span></a>
@@ -37,12 +38,13 @@
 <div class="container border border-primary p-3 mb-3 mt-3" id="search-form">
     <div class="row">
         <div class="col-md-2">
-            <label for="name">Name*:</label>
+            <label for="search-account">Account*:</label>
         </div>
         <div class='col-sm-6'>
             <div class="form-group">
-                <div>
-                    <input type='text' class="form-control" id="name"/>
+                <div class='input-group'>
+                    <select class="form-control" id='search-account'>
+                    </select>
                 </div>
             </div>
         </div>
@@ -75,10 +77,10 @@
         <thead>
         <tr>
             <th data-field="date" scope="col">Date</th>
-            <th data-field="counterAccount" scope="col">Counter account</th>
+            <th data-field="name" scope="col">Counter account</th>
             <th data-field="amount" data-formatter="amountFormatter" scope="col">Amount</th>
             <th data-field="detail" scope="col">Detail</th>
-            <th data-field="label" data-formatter="linkFormatter" data-events="linkEvent">Label</th>
+            <th data-field="category" data-formatter="linkFormatter" data-events="linkEvent">Label</th>
             <th data-field="delete" data-formatter="deleteFormatter" data-events="deleteEvent">Actions</th>
         </tr>
         </thead>
@@ -95,6 +97,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
 <script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
 <script src="https://unpkg.com/bootstrap-table@1.16.0/dist/extensions/editable/bootstrap-table-editable.min.js"></script>
+<script src="js/accounts.js"></script>
 <script src="js/config.js"></script>
 <script src="js/labels.js"></script>
 <script>
@@ -117,6 +120,13 @@
             }
             label_options = response;
         });
+        allAccounts().then((response) => {
+            let search_account = $('#search-account');
+            for (var it in response) {
+                search_account.append("<option value='" + response[it].id + "'>" + response[it].displayName + "</option>");
+            }
+        });
+
     }
 
     function createLabelDropdown(selectedLabel) {
@@ -167,7 +177,7 @@
     };
 
     function removePayment(id) {
-        let url = BACKEND_URL + '/BudgetPlanner/api/payments/' + id;
+        let url = BACKEND_URL + '/payments/' + id;
 
         fetch(url,
             {
@@ -186,7 +196,7 @@
 
 
     function doSearch() {
-        let url = BACKEND_URL + '/BudgetPlanner/api/accounts/' + $('#name').val();
+        let url = BACKEND_URL + '/accounts/' + $('#search-account').val();
         let label = $('#search-label').val();
         let message = document.getElementById("message");
 

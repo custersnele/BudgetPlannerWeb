@@ -18,50 +18,29 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-            <a class="nav-item nav-link" href="upload_payments.html">Upload</a>
+            <a class="nav-item nav-link active" href="upload_payments.html">Upload<span class="sr-only">(current)</span></a>
             <a class="nav-item nav-link" href="overview_payments.html">Payments</a>
             <a class="nav-item nav-link" href="add_payment.html">Add payment</a>
-            <a class="nav-item nav-link active" href="add_account.html">Add account<span
-                    class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link" href="add_account.html">Add account</a>
             <a class="nav-item nav-link" href="manage_labels.html">Manage labels</a>
         </div>
     </div>
 </nav>
-<div class="container border border-primary p-3 mb-3 mt-3" id="add-account-form">
+<div class="container border border-primary p-3 mb-3 mt-3" id="upload-file-form">
     <form>
         <div class="row p-3">
             <div class="col-md-2">
-                <label for="name">Name:</label>
+                <label for="file">Choose file:</label>
             </div>
             <div class='col-md-6'>
                 <div>
-                    <input type='text' class="form-control" id="name"/>
+                    <input type="file" id="file" name="filename" />
                 </div>
             </div>
         </div>
         <div class="row p-3">
             <div class="col-md-2">
-                <label for="firstname">Firstname:</label>
-            </div>
-            <div class='col-md-6'>
-                <div>
-                    <input type='text' class="form-control" id="firstname"/>
-                </div>
-            </div>
-        </div>
-        <div class="row p-3">
-            <div class="col-md-2">
-                <label for="iban">IBAN:</label>
-            </div>
-            <div class='col-md-6'>
-                <div>
-                    <input type='text' class="form-control" id="iban"/>
-                </div>
-            </div>
-        </div>
-        <div class="row p-3">
-            <div class="col-md-2">
-                <button type="button" class="btn btn-primary" id="add-button">Add</button>
+                <button type="button" class="btn btn-primary" id="upload-button">Upload</button>
             </div>
         </div>
     </form>
@@ -86,22 +65,21 @@
     function init() {
         $('#message').hide();
         $('#error').hide();
-        $('#add-button').click(addAccount);
+        $('#upload-button').click(uploadFile);
     }
 
-    function addAccount() {
-        let name = $('#name').val();
-        let firstname = $('#firstname').val();
-        let iban = $('#iban').val();
+    function uploadFile() {
+        let file = $('#file')[0].files[0];
+
         var $errorMessage = $('#error');
         var $message = $('#message');
-        createNewAccount(iban, name, firstname).then((response) => {
-            $message.text("Account successfully created!");
+        sendData(file).then((response) => {
+            $message.text("File successfully uploaded!");
             $errorMessage.hide();
             $message.show();
         }).catch((exception) => {
-                exception.json().then((error) => {
-                    $errorMessage.text(error.message);
+                exception.text().then((error) => {
+                    $errorMessage.text(error);
                     $errorMessage.show();
                     $message.hide();
                 });
