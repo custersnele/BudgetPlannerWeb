@@ -31,7 +31,7 @@
             <a class="nav-item nav-link active" href="overview_payments.html">Payments<span
                     class="sr-only">(current)</span></a>
             <a class="nav-item nav-link" href="add_account.html">Manage accounts</a>
-            <a class="nav-item nav-link" href="manage_labels.html">Manage labels</a>
+            <a class="nav-item nav-link" href="manage_categories.html">Manage categories</a>
         </div>
     </div>
 </nav>
@@ -51,7 +51,35 @@
     </div>
     <div class="row">
         <div class="col-md-2">
-            <label for="search-label">Label:</label>
+            <label for="from-date">Date from:</label>
+        </div>
+        <div class='col-sm-2'>
+            <div class="form-group">
+                <div class='input-group date'>
+                    <input type='text' class="form-control" id='from-date'/>
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <label for="to-date">to:</label>
+        </div>
+        <div class='col-sm-2'>
+            <div class="form-group">
+                <div class='input-group date'>
+                    <input type='text' class="form-control" id='to-date'/>
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <label for="search-label">Category:</label>
         </div>
         <div class='col-sm-6'>
             <div class="form-group">
@@ -110,6 +138,8 @@
             todayHighlight: true,
             autoclose: true,
         };
+        $('#from-date').datepicker(options);
+        $('#to-date').datepicker(options);
         $('.input-daterange').datepicker(options);
         $('#search-button').click(doSearch);
         findLabels().then((response) => {
@@ -198,10 +228,28 @@
     function doSearch() {
         let url = BACKEND_URL + '/accounts/' + $('#search-account').val();
         let label = $('#search-label').val();
+        let dateFrom = $('#from-date').val();
+        let dateTo = $('#to-date').val();
         let message = document.getElementById("message");
 
+        let query = '';
         if (label != null && label !== '') {
-            let query = encodeURIComponent('label') + '=' + encodeURIComponent(label);
+           query += encodeURIComponent('category') + '=' + encodeURIComponent(label);
+        }
+        if (dateFrom != null && dateFrom !== '') {
+            if (query !== '') {
+                query += '&';
+            }
+            query += encodeURIComponent('fromDate') + '=' + encodeURIComponent(dateFrom);
+        }
+        if (dateTo != null && dateTo !== '') {
+            if (query !== '') {
+                query += '&';
+            }
+            query += encodeURIComponent('toDate') + '=' + encodeURIComponent(dateTo);
+        }
+
+        if (query !== '') {
             url = url + '?' + query;
         }
 

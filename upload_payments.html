@@ -22,7 +22,7 @@
             <a class="nav-item nav-link" href="overview_payments.html">Payments</a>
             <a class="nav-item nav-link" href="add_payment.html">Add payment</a>
             <a class="nav-item nav-link" href="add_account.html">Add account</a>
-            <a class="nav-item nav-link" href="manage_labels.html">Manage labels</a>
+            <a class="nav-item nav-link" href="manage_categories.html">Manage categories</a>
         </div>
     </div>
 </nav>
@@ -78,8 +78,8 @@
             $errorMessage.hide();
             $message.show();
         }).catch((exception) => {
-                exception.text().then((error) => {
-                    $errorMessage.text(error);
+                exception.json().then((error) => {
+                    $errorMessage.text(error.message);
                     $errorMessage.show();
                     $message.hide();
                 });

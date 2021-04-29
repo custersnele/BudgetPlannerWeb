@@ -17,8 +17,8 @@ function findLabels() {
 }
 
 
-function linkPayment(paymentId, labelId) {
-    let url = BACKEND_URL + '/payments/' + paymentId + "/link/" + labelId;
+function linkPayment(paymentId, categoryId) {
+    let url = BACKEND_URL + '/payments/' + paymentId + "/link/" + categoryId;
 
     return fetch(url,
         {
